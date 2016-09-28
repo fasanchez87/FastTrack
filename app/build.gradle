@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'fasttrack'
+            keyPassword 'system1987'
+            storeFile file('D:/Key Fast Track/key.jks')
+            storePassword 'system1987'
+        }
+    }
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
+    defaultConfig {
+        applicationId "com.ingenia.fasttrack"
+        minSdkVersion 16
+        targetSdkVersion 24
+        versionCode 5
+        versionName "1.5"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
+        }
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.google.android.gms:play-services:9.4.0'
+    compile 'com.mcxiaoke.volley:library-aar:1.0.1'
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:design:24.2.0'
+    compile 'com.android.support:support-v4:24.2.0'
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.koushikdutta.ion:ion:2.+'
+}
