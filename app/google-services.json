@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "268428476421",
+    "firebase_url": "https://fasttrackapp-141920.firebaseio.com",
+    "project_id": "fasttrackapp-141920",
+    "storage_bucket": "fasttrackapp-141920.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:268428476421:android:7530cc4dd926ef86",
+        "android_client_info": {
+          "package_name": "com.ingenia.fasttrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "268428476421-8s2ocvefb64dmicitok0im7mscbr0nfv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWA9CD4wVbWN1UOvarim9P9yb2OYPpDWU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

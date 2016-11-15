@@ -18,6 +18,11 @@ public class Sede
 
 
 
+    private String valTurno;
+    private String skuPago;
+
+
+
     private String valorTurno;
 
     public Sede()
@@ -119,6 +124,22 @@ public class Sede
     public void setLatSede(String latSede)
     {
         this.latSede = latSede;
+    }
+
+    public String getValTurno() {
+        return valTurno;
+    }
+
+    public void setValTurno(String valTurno) {
+        this.valTurno = valTurno;
+    }
+
+    public String getSkuPago() {
+        return skuPago;
+    }
+
+    public void setSkuPago(String skuPago) {
+        this.skuPago = skuPago;
     }
 
 

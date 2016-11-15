@@ -90,7 +90,8 @@ public abstract class PermissionUtils {
         }
 
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
+        public Dialog onCreateDialog(Bundle savedInstanceState)
+        {
             mFinishActivity = getArguments().getBoolean(ARGUMENT_FINISH_ACTIVITY);
 
             return new AlertDialog.Builder(getActivity())
