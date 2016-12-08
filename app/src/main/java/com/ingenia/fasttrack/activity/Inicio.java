@@ -809,6 +809,7 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
 
                 multilineSnackbar = MultilineSnackbar.make(coordinatorLayoutView, snackbarText, Snackbar.LENGTH_INDEFINITE);
                 multilineSnackbar.setAction("COMPRAR", undoOnClickListener);
+                multilineSnackbar.setActionTextColor(getResources().getColor(R.color.colorAccent));
                 multilineSnackbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 multilineSnackbar.show();
                 showMessage = true;
