@@ -15,7 +15,7 @@
             android:id="@+id/input_layout_nombre_cliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre Cliente"
+
 
             >
 
@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine = "true"
                 android:inputType="textCapCharacters"
+                android:hint="Nombre Cliente"
 
 
                />
@@ -44,6 +45,18 @@
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
             android:text="CONFIRMAR"
+            android:layout_weight="1"
+            android:textColor="@android:color/white" />
+        <Space
+            android:layout_width="7dp"
+            android:layout_height="0dp" />
+
+        <Button
+            android:id="@+id/btn_cancelar_nombre_cliente"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:text="CANCELAR"
             android:layout_weight="1"
             android:textColor="@android:color/white" />
 

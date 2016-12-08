@@ -93,7 +93,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
     private void handleDataMessage(JSONObject json)
     {
         Log.e(TAG, "push json: " + json.toString());
-
         try
         {
             //JSONObject data = json.getJSONObject("data");
@@ -150,6 +149,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
                         NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
                         notificationUtils.playNotificationSound();
                     }
+
+                    if (keyMessage.equals("pushNotificaClienteAnular"))
+                    {
+                        Intent intent = new Intent(Config.PUSH_NOTIFICATION_CLIENTE_ANULAR);
+                        intent.putExtra("message", message);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                        //Vibrate Device
+                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        // Vibrate for 500 milliseconds
+                        v.vibrate(5000);
+                        // play notification sound
+                        NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
+                        notificationUtils.playNotificationSound();
+                    }
+
+
                 }
 
                 else
@@ -164,6 +179,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
                         resultIntent.putExtra("ticket", ticket.toString());
                         PendingIntent pendingNotificationIntent = PendingIntent.getActivity(getApplicationContext(),1,
                                 resultIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+
+                        Log.i(TAG, "Ticket -> :: "+ticket.toString());
+
+
+                      /*  //Vibrate Device
+                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        // Vibrate for 500 milliseconds
+                        v.vibrate(5000);*/
                         // check for image attachment
                         if (TextUtils.isEmpty(imageUrl))
                         {
@@ -180,8 +203,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
                     if (keyMessage.equals("pushNotificaClienteUso"))
                     {
                         Intent resultIntent = new Intent(MyFirebaseMessagingService.this, EsperaTurno.class);
+                        resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
+                                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(resultIntent);
                         resultIntent.putExtra("message", message);
                         resultIntent.putExtra("notificarUsoTicket", notificarUsoTicket);
+                        resultIntent.putExtra("ticket", ticket.toString());
+                        PendingIntent pendingNot = PendingIntent.getActivity(getApplicationContext(),0,
+                                resultIntent,0);
+
+                        // check for image attachment
+                        if (TextUtils.isEmpty(imageUrl))
+                        {
+                            showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+                        }
+
+                        else
+                        {
+                            // image is present, show notification with image
+                            showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
+                        }
+
+
+                    }
+
+
+                    if (keyMessage.equals("pushNotificaClienteAnular"))
+                    {
+                        Intent resultIntent = new Intent(MyFirebaseMessagingService.this, EsperaTurno.class);
+                        resultIntent.putExtra("message", message);
+                        resultIntent.putExtra("notificarAnulacionTicket", "notificarAnulacionTicket");
                         resultIntent.putExtra("ticket", ticket.toString());
                         PendingIntent pendingNotificationIntent = PendingIntent.getActivity(getApplicationContext(),1,
                                 resultIntent,PendingIntent.FLAG_CANCEL_CURRENT);
@@ -197,6 +248,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
                             showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
                         }
                     }
+
+
+
                 }
             }
 

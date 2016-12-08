@@ -15,6 +15,7 @@ public class Config
     public static final String PUSH_NOTIFICATION = "pushNotification";
     public static final String PUSH_NOTIFICATION_OCULTAR_PANTALLA_ESPERA_TURNO_ASESOR = "pushNotificationOcultarPantallaEsperaTurnoAsesor";
     public static final String PUSH_NOTIFICATION_USO_TICKET = "pushNotificaClienteUso";
+    public static final String PUSH_NOTIFICATION_CLIENTE_ANULAR = "pushNotificaClienteAnular";
 
     // id to handle the notification in the notification tray
     public static final int NOTIFICATION_ID = 100;

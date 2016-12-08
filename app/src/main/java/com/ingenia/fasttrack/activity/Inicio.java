@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -140,9 +141,9 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
 
     private String orderIDComprarGoogle;
 
-    double radiusInMeters = 20.0;
-    int strokeColor = 0xffff0000; //red outline
-    int shadeColor = 0x44ff0000; //opaque red fill
+    double radiusInMeters = 30.0;
+    int strokeColor = Color.rgb(153,249,1); //red outline
+    int shadeColor = Color.argb(50,153,189,48); //opaque red fill
 
     private boolean showMessage = false;
 
@@ -237,6 +238,8 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         //getSupportActionBar().hide();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -517,6 +520,7 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
                 // Handle error
                 Log.i(LogCatClass, "Error: "+result.getMessage().toString() );
                 //Log.i(LogCatClass, "Error: "+purchase.getOriginalJson().toString() );
+                //mHelper.queryInventoryAsync(mReceivedInventoryListener);
 
 
                 return;
@@ -630,7 +634,7 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
     private void showGPSDisabledAlertToUser()
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Su GPS esta apagado, para que FastTrack funcione correctamente debe encenderlo, ¿desea hacerlo?")
+        alertDialogBuilder.setMessage("Su GPS esta apagado, para que Fast Track funcione correctamente debe encenderlo, ¿desea hacerlo?")
                 .setCancelable(false)
                 .setPositiveButton("Activar GPS",
                         new DialogInterface.OnClickListener()
@@ -793,18 +797,18 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
                 snackbarText.append("Justo ahora estás en ");
                 int boldStart = snackbarText.length();
                 snackbarText.append(nombreSede);
-                snackbarText.setSpan(new ForegroundColorSpan(Color.rgb(244,11,82)), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                snackbarText.setSpan(new ForegroundColorSpan(Color.rgb(153,189,43)), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 snackbarText.append(".");
                 snackbarText.append(" Evita la Fila pagando ");
                 int boldStart2 = snackbarText.length();
                 snackbarText.append("$"+ValorTicket);
-                snackbarText.setSpan(new ForegroundColorSpan(Color.rgb(244,11,82)), boldStart2, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                snackbarText.setSpan(new ForegroundColorSpan(Color.rgb(153,189,43)), boldStart2, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart2, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                snackbarText.append(" y haz tu diligencia rápido.");
+                snackbarText.append(".");
 
                 multilineSnackbar = MultilineSnackbar.make(coordinatorLayoutView, snackbarText, Snackbar.LENGTH_INDEFINITE);
-                multilineSnackbar.setAction("Aceptar", undoOnClickListener);
+                multilineSnackbar.setAction("COMPRAR", undoOnClickListener);
                 multilineSnackbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 multilineSnackbar.show();
                 showMessage = true;
@@ -819,10 +823,10 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
                 SpannableStringBuilder snackbarText = new SpannableStringBuilder();
                 snackbarText.append("Ubica los puntos ");
                 int boldStart = snackbarText.length();
-                snackbarText.append("FastTrack ");
-                snackbarText.setSpan(new ForegroundColorSpan(Color.rgb(244,11,82)), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                snackbarText.append("Fast Track ");
+                snackbarText.setSpan(new ForegroundColorSpan(Color.rgb(153,189,43)), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), boldStart, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                snackbarText.append("en el mapa, haz tu diligencia y evita la fila justo ahora.");
+                snackbarText.append("en el mapa, y evita la fila.");
 
                 multilineSnackbar = MultilineSnackbar.make(coordinatorLayoutView, snackbarText, Snackbar.LENGTH_INDEFINITE);
                 multilineSnackbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -843,7 +847,7 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(18));
         mRequestingLocationUpdates = true;
 
         float[] distance = new float[2];
@@ -1086,7 +1090,7 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
     @Override
     public boolean onMyLocationButtonClick()
     {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
@@ -1124,11 +1128,12 @@ public void mostrarDialogoNombreCliente()
    // Log.d("DIRECCION", "" + sharedPreferences.getString("nombreCliente").toString());
 
     final Button botonConfirmarNombreCliente = (Button) alertLayout.findViewById(R.id.btn_confirmar_nombre_cliente);
+    final Button botonCancelarNombreCliente = (Button) alertLayout.findViewById(R.id.btn_cancelar_nombre_cliente);
 
 
 
     AlertDialog.Builder alert = new AlertDialog.Builder(this);
-    //alert.setTitle("Nombre Cliente");
+    //alert.setTitle("ESCRIBA SU NOMBRE COMPLETO");
     alert.setView(alertLayout);
     alert.setCancelable(false);
     alertDialogNombreCliente = alert.create();
@@ -1150,13 +1155,14 @@ public void mostrarDialogoNombreCliente()
             {
                 //_webServiceEnviarNotificacionPushATodos(sharedPreferences.getString("serialUsuario"));
 
-             /*  mHelper.launchPurchaseFlow(Inicio.this, getSkuPagoSede(), 10001, mPurchaseFinishedListener,
+               mHelper.launchPurchaseFlow(Inicio.this, getSkuPagoSede(), 10001, mPurchaseFinishedListener,
                         getRandomSkuIdPurchaseToGoogle(55));//mypurchasetoken: TOKEN QUE DEBE GENERARSE PARA IDENTIFICAR LA COMPRA EN CASO DE RECLAMO.
-*/
 
+
+
+        /*       ////////////////saltarse el pago//////////////////////
                 ticket = new Ticket();
                 //buyButton.setEnabled(false);
-
                 sharedPreferences.putString("nombreCliente", nomCliente);
 
                         ticket.setOrderId("orderId");
@@ -1164,24 +1170,33 @@ public void mostrarDialogoNombreCliente()
                         ticket.setProductId("productId");
                         ticket.setDeveloperPayload("developerPayload");
                         ticket.setPurchaseToken("purchaseToken");
-
                         serviceComprarTicket();
-
-                /*  Intent intent = new Intent(Inicio.this, EsperaTurno.class);
+               *//*  Intent intent = new Intent(Inicio.this, EsperaTurno.class);
                 intent.putExtra("turnoCliente","PEPE");
                 intent.putExtra("nombreCliente", "PEPE");
-                startActivity(intent);*/
-
-                Toast.makeText(getApplicationContext(), "token: "+tokenFCM,Toast.LENGTH_LONG).show();
-
+                startActivity(intent);*//**//*
+                //Toast.makeText(getApplicationContext(), "token: "+tokenFCM,Toast.LENGTH_LONG).show();*//*
 
 
-                editTextNombreCliente.setText(""+sharedPreferences.getString("nombreCliente").toString());
 
-                //dialog.dismiss();
+                //editTextNombreCliente.setText(""+sharedPreferences.getString("nombreCliente").toString());
+
+                //dialog.dismiss();//saltarse el pago*/
                 alertDialogNombreCliente.dismiss();
             }
 
+        }
+    });
+
+
+    botonCancelarNombreCliente.setOnClickListener(new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            alertDialogNombreCliente.dismiss();
+            finish();
+            startActivity(getIntent());
         }
     });
 
@@ -1212,7 +1227,7 @@ private void sendRegistrationTokenFCMToServer(final String refreshedToken)
                         {
 
                             Log.e(TAG, "Se registro exitosamente GCM al Server::Inicio Activity");
-                            Toast.makeText(Inicio.this, "Se registro exitosamente FCM al Server", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Inicio.this, "Se registro exitosamente FCM al Server", Toast.LENGTH_SHORT).show();
                             serviceConsultarDisponibilidadTicket();
 
                         }
@@ -1267,7 +1282,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
     progressDialog = new ProgressDialog(Inicio.this);
     progressDialog.setIndeterminate(true);
-    progressDialog.setMessage("Cargando Sitios FastTrack, espera un momento ...");
+    progressDialog.setMessage("Cargando Sitios Fast Track, espera un momento ...");
     progressDialog.show();
     progressDialog.setCancelable(false);
 
@@ -1388,7 +1403,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
                         {
                             progressDialog.dismiss();
-                            Snackbar.make(coordinatorLayoutView, "Error al consultar Clientes, favor consulte al Administrador de FastTrack",
+                            Snackbar.make(coordinatorLayoutView, "Error al consultar Clientes, favor consulte al Administrador de Fast Track",
                                     Snackbar.LENGTH_INDEFINITE)
                                     .setAction("Comprar",null).show();
                         }
@@ -1409,7 +1424,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
                     if (error instanceof TimeoutError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de conexión, sin respuesta del servidor.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1425,7 +1440,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
                     if (error instanceof NoConnectionError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Por favor, conectese a la red.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1441,7 +1456,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
                     if (error instanceof AuthFailureError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de autentificación en la red, favor contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1457,7 +1472,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
                     if (error instanceof ServerError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error server, sin respuesta del servidor.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1473,7 +1488,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
                     if (error instanceof NetworkError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de red, contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1489,7 +1504,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
                     if (error instanceof ParseError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de conversión Parser, contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1562,7 +1577,7 @@ private void serviceRegistroDispositivo()//REGISTRAMOS EL DEVICE SEGUN SU IMEI Y
 
                     if (error instanceof TimeoutError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de conexión, sin respuesta del servidor.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1578,7 +1593,7 @@ private void serviceRegistroDispositivo()//REGISTRAMOS EL DEVICE SEGUN SU IMEI Y
 
                     if (error instanceof NoConnectionError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Por favor, conectese a la red.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1594,7 +1609,7 @@ private void serviceRegistroDispositivo()//REGISTRAMOS EL DEVICE SEGUN SU IMEI Y
 
                     if (error instanceof AuthFailureError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de autentificación en la red, favor contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1610,7 +1625,7 @@ private void serviceRegistroDispositivo()//REGISTRAMOS EL DEVICE SEGUN SU IMEI Y
 
                     if (error instanceof ServerError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error server, sin respuesta del servidor.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1626,7 +1641,7 @@ private void serviceRegistroDispositivo()//REGISTRAMOS EL DEVICE SEGUN SU IMEI Y
 
                     if (error instanceof NetworkError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de red, contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1642,7 +1657,7 @@ private void serviceRegistroDispositivo()//REGISTRAMOS EL DEVICE SEGUN SU IMEI Y
 
                     if (error instanceof ParseError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de conversión Parser, contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1696,10 +1711,10 @@ private void serviceComprarTicket()//COMPRA DE TICKET
                         {
                             //consumeItem();
                             Log.i("Inicio","Compra Exitosa!");
-                            Toast.makeText(getApplicationContext(), "Compra Exitosa!!!", Toast.LENGTH_LONG).show();
+                           /* Toast.makeText(getApplicationContext(), "Compra Exitosa!!!", Toast.LENGTH_LONG).show();
                             Toast.makeText(getApplicationContext(), "Turno: "+response.getString("turnoCliente"), Toast.LENGTH_LONG).show();
                             Toast.makeText(getApplicationContext(), "NomCliente: "+response.getString("nomCliente"), Toast.LENGTH_LONG).show();
-                            Toast.makeText(getApplicationContext(), "token: "+tokenFCM,Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "token: "+tokenFCM,Toast.LENGTH_LONG).show();*/
 
                             //editTextNombreCliente.setText(""+sharedPreferences.getString("nombreCliente").toString());
 
@@ -1707,6 +1722,7 @@ private void serviceComprarTicket()//COMPRA DE TICKET
                             Intent intent = new Intent(Inicio.this, EsperaTurno.class);
                             intent.putExtra("turnoCliente", response.getString("turnoCliente"));
                             intent.putExtra("nombreCliente", response.getString("nomCliente"));
+                            intent.putExtra("orderId", ticket.getOrderId());
                             startActivity(intent);
                             //finish();
                         }
@@ -1733,7 +1749,7 @@ private void serviceComprarTicket()//COMPRA DE TICKET
 
                     if (error instanceof TimeoutError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de conexión, sin respuesta del servidor.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1749,7 +1765,7 @@ private void serviceComprarTicket()//COMPRA DE TICKET
 
                     if (error instanceof NoConnectionError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Por favor, conectese a la red.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1765,7 +1781,7 @@ private void serviceComprarTicket()//COMPRA DE TICKET
 
                     if (error instanceof AuthFailureError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de autentificación en la red, favor contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1781,7 +1797,7 @@ private void serviceComprarTicket()//COMPRA DE TICKET
 
                     if (error instanceof ServerError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error server, sin respuesta del servidor.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1797,7 +1813,7 @@ private void serviceComprarTicket()//COMPRA DE TICKET
 
                     if (error instanceof NetworkError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de red, contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1813,7 +1829,7 @@ private void serviceComprarTicket()//COMPRA DE TICKET
 
                     if (error instanceof ParseError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de conversión Parser, contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1858,9 +1874,9 @@ private void serviceComprarTicket()//COMPRA DE TICKET
 
 private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICKET DISPONIBLE
 {
-   String _urlWebServiceConsultarDisponibilidadTicket = vars.ipServer.concat("/ws/disponibilidadTicket");
+    String _urlWebServiceConsultarDisponibilidadTicket = vars.ipServer.concat("/ws/disponibilidadTicket");
 
-    String TAG = "serviceConsultarDisponibilidadTicket";
+    final String TAG = "serviceConsultarDisponibilidadTicket";
 
     JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, _urlWebServiceConsultarDisponibilidadTicket, null,
             new Response.Listener<JSONObject>()
@@ -1882,9 +1898,11 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
                             desMensaje = ticket.getString("desMensaje");
                             codEstado = ticket.getString("codEstado");
 
+                            Log.i(TAG,""+desMensaje);
+
                             if(TextUtils.isEmpty(desMensaje))//SI desMensaje ES NULL ES PORQUE NO SE HA ASUMIDO.
                             {
-                                ticketEsAsumido = false;
+                               /* ticketEsAsumido = false;
                                 Intent intent = new Intent(Inicio.this, EsperaTurno.class);
                                 intent.putExtra("turnoCliente", turnoCliente);
                                 intent.putExtra("nombreCliente", nombreCliente);
@@ -1892,16 +1910,36 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
                                 intent.putExtra("ticketEsAsumido", ticketEsAsumido);
                                 intent.putExtra("codEstado", codEstado);
                                 startActivity(intent);
-                                Inicio.this.finish();
+                                Inicio.this.finish();*/
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
+                                builder
+                                        .setTitle("TICKET PENDIENTE")
+                                        .setMessage("Vaya! Se ha encontrado un Ticket que esta pendiente por atender, favor atento al llamado.")
+                                        .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int id)
+                                            {
+                                                Intent intent = new Intent(Inicio.this, EsperaTurno.class);
+                                                intent.putExtra("turnoCliente", turnoCliente);
+                                                intent.putExtra("nombreCliente", nombreCliente);
+                                                intent.putExtra("message", desMensaje);
+                                                intent.putExtra("ticketEsAsumido", ticketEsAsumido);
+                                                intent.putExtra("codEstado", codEstado);
+                                                startActivity(intent);
+                                                Inicio.this.finish();
+
+                                            }
+                                        }).setCancelable(false).show();
                             }
 
                             else
                             {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                                 builder
-                                        .setTitle("TICKET DISPONIBLE")
-                                        .setMessage("Vaya! Se ha encontrado un Ticket que debe ser usado, de lo "+
-                                                "contrario no podrás comprar más Tickets, Usalo justo ahora!")
+                                        .setTitle("TICKET EN USO")
+                                        .setMessage("Vaya! Se ha encontrado un Ticket que ya ha sido asignado a un asesor.")
                                         .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
                                         {
                                             @Override
@@ -1940,7 +1978,7 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
 
                     if (error instanceof TimeoutError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de conexión, sin respuesta del servidor.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1956,7 +1994,7 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
 
                     if (error instanceof NoConnectionError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Por favor, conectese a la red.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1972,7 +2010,7 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
 
                     if (error instanceof AuthFailureError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de autentificación en la red, favor contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -1988,7 +2026,7 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
 
                     if (error instanceof ServerError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error server, sin respuesta del servidor.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -2004,7 +2042,7 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
 
                     if (error instanceof NetworkError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
                                 .setMessage("Error de red, contacte a su proveedor de servicios.")
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -2020,9 +2058,9 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
 
                     if (error instanceof ParseError)
                     {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Inicio.this);
                         builder
-                                .setMessage("Error de conversión Parser, contacte a su proveedor de servicios.")
+                                .setMessage("Error de conversión Parser, contacte a su proveedor de servicios."+error.getMessage().toString())
                                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
                                 {
                                     @Override
@@ -2187,13 +2225,13 @@ public android.support.v7.app.AlertDialog getAlertDialog(final String permission
 
     if(permission.equals("android.permission.ACCESS_FINE_LOCATION"))
     {
-        messageAlert = "FastTrack necesita que apruebe el permiso de Geolocalización, a continuación será dirigido a ajustes de Aplicación "
+        messageAlert = "Fast Track necesita que apruebe el permiso de Geolocalización, a continuación será dirigido a ajustes de Aplicación "
                 +"y active el permiso de Ubicación.";
     }
 
     if(permission.equals("android.permission.READ_PHONE_STATE"))
     {
-        messageAlert = "FastTrack necesita que apruebe el permiso de Acceso al télefono, a continuación será dirigido a ajustes de Aplicación "
+        messageAlert = "Fast Track necesita que apruebe el permiso de Acceso al télefono, a continuación será dirigido a ajustes de Aplicación "
                 +"y active el permiso de Télefono y Almacenamiento.";
     }
 

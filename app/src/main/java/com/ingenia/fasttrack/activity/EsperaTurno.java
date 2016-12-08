@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -57,10 +59,10 @@ public class EsperaTurno extends AppCompatActivity
     RelativeLayout relativeLayoutEsperaTurnoAsesor;
     public static RelativeLayout relativeLayoutMostrarClienteTurnoAsesor;
     public final static int WHITE = 0xFFFFFFFF;
-    public final static int BLACK = 0xFF000000;
+    public final static int BLACK = Color.rgb(250,16,86);
     public final static int WIDTH = 600;
     public final static int HEIGHT =600;
-    private String turnoCliente, nombreCliente, desMensaje,  ticketString;
+    private String turnoCliente, nombreCliente, desMensaje, ticketString, orderId, messageDialog;
     private boolean ticketEsAsumido;
     private JSONObject ticketJSONObject;
     private String codEstado;
@@ -79,6 +81,8 @@ public class EsperaTurno extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_espera_turno);
         //getSupportActionBar().hide();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
 
         qrCodeImageview = (ImageView) findViewById(R.id.img_qr_turno);
@@ -102,6 +106,7 @@ public class EsperaTurno extends AppCompatActivity
                 desMensaje = null;
                 ticketEsAsumido = true;
                 codEstado = null;
+                orderId = null;
             }
             else
             {
@@ -110,11 +115,13 @@ public class EsperaTurno extends AppCompatActivity
                 desMensaje = extras.getString("message");
                 ticketEsAsumido = extras.getBoolean("ticketEsAsumido");
                 codEstado = extras.getString("codEstado");
+                orderId = extras.getString("orderId");
 
                 Log.i(TAG, "Turno Cliente -> "+turnoCliente);
                 Log.i(TAG, "Nombre Cliente -> "+nombreCliente);
                 Log.i(TAG, "desMensaje -> "+desMensaje);
                 Log.i(TAG, "existeTicketSinProcesar -> "+ticketEsAsumido);
+                Log.i(TAG, "orderId -> "+orderId);
             }
 
             if (sharedPreferences.getBoolean("saveEstado"))
@@ -138,6 +145,8 @@ public class EsperaTurno extends AppCompatActivity
             }
         }
 
+
+
         try
         {
             Bitmap bitmap = encodeAsBitmap(turnoCliente);
@@ -145,12 +154,12 @@ public class EsperaTurno extends AppCompatActivity
             textViewnombreCliente.setText(nombreCliente.toString().toUpperCase());
             //textViewTextoEsperaTurno.setText(""+desMensaje);
 
-            if(ticketEsAsumido)//EL TICKET NO SE HA ASUMIDO.
+           /* if(ticketEsAsumido)//EL TICKET NO SE HA ASUMIDO.
             {
                 relativeLayoutEsperaTurnoAsesor.setVisibility(View.GONE);
                 relativeLayoutMostrarClienteTurnoAsesor.setVisibility(View.VISIBLE);
                 textViewTextoMostraClienteAsesorAtencion.setText(""+desMensaje);
-            }
+            }*/
 
 
         }
@@ -200,6 +209,36 @@ public class EsperaTurno extends AppCompatActivity
                     relativeLayoutEsperaTurnoAsesor.setVisibility(View.GONE);
                     relativeLayoutMostrarClienteTurnoAsesor.setVisibility(View.VISIBLE);*/
                 }
+
+                if (intent.getAction().equals(Config.PUSH_NOTIFICATION_CLIENTE_ANULAR))
+                {
+                    //HABILITO PARA COMPRAR UN TICKET DE NUEVO Y MUESTRO MENSAJE DE QUE EL TICKET ACTUAL YA SE USO
+
+                    String message = intent.getExtras().getString("message");
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                    builder
+                            .setTitle("TICKET CANCELADO")
+                            .setMessage(""+message)
+                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id)
+                                {
+                                    Intent intent = new Intent(EsperaTurno.this, Inicio.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }).setCancelable(false).show();
+/*
+
+                    relativeLayoutEsperaTurnoAsesor.setVisibility(View.GONE);
+                    relativeLayoutMostrarClienteTurnoAsesor.setVisibility(View.VISIBLE);*/
+                }
+
+
+
+
             }
         };
     }
@@ -229,10 +268,16 @@ public class EsperaTurno extends AppCompatActivity
         return bitmap;
     }
 
+
     @Override
     protected void onResume()
     {
-        super.onResume();
+
+        Log.d("save","CONSULTANDO ONRESUME");
+
+
+        serviceConsultarDisponibilidadTicket();
+        //consultarUsoTicket(); //pendiente
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.PUSH_NOTIFICATION_OCULTAR_PANTALLA_ESPERA_TURNO_ASESOR));
@@ -240,7 +285,13 @@ public class EsperaTurno extends AppCompatActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.PUSH_NOTIFICATION_USO_TICKET));
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION_CLIENTE_ANULAR));
+
         NotificationUtils.clearNotifications(getApplicationContext());
+
+        super.onResume();
+
     }
 
     @Override
@@ -253,7 +304,9 @@ public class EsperaTurno extends AppCompatActivity
 
     }
 
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        Log.d("save", "onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -265,11 +318,22 @@ public class EsperaTurno extends AppCompatActivity
     }
 
     @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+    }
+
+
+
+    @Override
     public void onNewIntent(Intent intent)
     {
         Bundle extras = intent.getExtras();
         if (extras != null)
         {
+
+            Log.i("extras","flag"+messageDialog);
+
             if (extras.containsKey("ocultarModuloEsperaCliente"))
             {
                 //setContentView(R.layout.viewmain);
@@ -286,6 +350,18 @@ public class EsperaTurno extends AppCompatActivity
 
             }
 
+            if (extras.containsKey("message"))
+            {
+                //setContentView(R.layout.viewmain);
+                // extract the extra-data in the Notification
+                messageDialog = extras.getString("message");
+                Log.i("flag","flag"+messageDialog);
+                /*txtView = (TextView) findViewById(R.id.txtMessage);
+                txtView.setText(msg);*/
+
+
+            }
+
             if (extras.containsKey("notificarUsoTicket"))
             {
 
@@ -294,6 +370,28 @@ public class EsperaTurno extends AppCompatActivity
                 AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
                 builder
                         .setTitle("NOTIFICACIÓN TICKET")
+                        .setMessage(""+message)
+                        .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                Intent intent = new Intent(EsperaTurno.this, Inicio.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }).setCancelable(false).show();
+
+            }
+
+            if (extras.containsKey("notificarAnulacionTicket"))
+            {
+
+                String message = extras.getString("message");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                builder
+                        .setTitle("TICKET CANCELADO")
                         .setMessage(""+message)
                         .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
                         {
@@ -360,6 +458,8 @@ public class EsperaTurno extends AppCompatActivity
 
         String TAG = "serviceConsultarDisponibilidadTicket";
 
+        Log.d("save","CONSULTANDO ONRESUME");
+
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, _urlWebServiceConsultarDisponibilidadTicket, null,
                 new Response.Listener<JSONObject>()
                 {
@@ -380,34 +480,26 @@ public class EsperaTurno extends AppCompatActivity
                                 desMensaje = ticket.getString("desMensaje");
                                 codEstado = ticket.getString("codEstado");
 
+                                Log.d("save","xx->"+codEstado);
+
+
                                 if(TextUtils.isEmpty(desMensaje))//SI desMensaje ES NULL ES PORQUE NO SE HA ASUMIDO.
                                 {
                                     ticketEsAsumido = false;
+                                    //relativeLayoutEsperaTurnoAsesor.setVisibility(View.GONE);
+                                    //relativeLayoutMostrarClienteTurnoAsesor.setVisibility(View.VISIBLE);
+                                    //textViewTextoMostraClienteAsesorAtencion.setText(""+desMensaje);
                                 }
 
                                 else
                                 {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
-                                    builder
-                                            .setTitle("TICKET DISPONIBLE")
-                                            .setMessage("Vaya! Se ha encontrado un Ticket que debe ser usado, de lo "+
-                                                    "contrario no podrás comprar más Tickets, Usalo justo ahora!")
-                                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
-                                            {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int id)
-                                                {
-                                                    Intent intent = new Intent(EsperaTurno.this, Inicio.class);
-                                                    intent.putExtra("turnoCliente", turnoCliente);
-                                                    intent.putExtra("nombreCliente", nombreCliente);
-                                                    intent.putExtra("message", desMensaje);
-                                                    intent.putExtra("ticketEsAsumido", ticketEsAsumido);
-                                                    intent.putExtra("codEstado", codEstado);
-                                                    startActivity(intent);
-                                                    EsperaTurno.this.finish();
+                                    relativeLayoutEsperaTurnoAsesor.setVisibility(View.GONE);
+                                    relativeLayoutMostrarClienteTurnoAsesor.setVisibility(View.VISIBLE);
+                                    textViewTextoMostraClienteAsesorAtencion.setText(""+desMensaje);
 
-                                                }
-                                            }).setCancelable(false).show();
+
+
+
                                 }
 
 
@@ -430,7 +522,7 @@ public class EsperaTurno extends AppCompatActivity
 
                         if (error instanceof TimeoutError)
                         {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
                             builder
                                     .setMessage("Error de conexión, sin respuesta del servidor.")
                                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -446,7 +538,7 @@ public class EsperaTurno extends AppCompatActivity
 
                         if (error instanceof NoConnectionError)
                         {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
                             builder
                                     .setMessage("Por favor, conectese a la red.")
                                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -462,7 +554,7 @@ public class EsperaTurno extends AppCompatActivity
 
                         if (error instanceof AuthFailureError)
                         {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
                             builder
                                     .setMessage("Error de autentificación en la red, favor contacte a su proveedor de servicios.")
                                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -478,7 +570,7 @@ public class EsperaTurno extends AppCompatActivity
 
                         if (error instanceof ServerError)
                         {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
                             builder
                                     .setMessage("Error server, sin respuesta del servidor.")
                                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -494,7 +586,7 @@ public class EsperaTurno extends AppCompatActivity
 
                         if (error instanceof NetworkError)
                         {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
                             builder
                                     .setMessage("Error de red, contacte a su proveedor de servicios.")
                                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -510,7 +602,7 @@ public class EsperaTurno extends AppCompatActivity
 
                         if (error instanceof ParseError)
                         {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
                             builder
                                     .setMessage("Error de conversión Parser, contacte a su proveedor de servicios.")
                                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
@@ -534,6 +626,189 @@ public class EsperaTurno extends AppCompatActivity
                 headers.put("WWW-Authenticate", "xBasic realm=".concat(""));
                 //headers.put("idDevice",getDeviceId());
                 headers.put("idDevice",sharedPreferences.getString("deviceID"));
+                headers.put("MyToken",sharedPreferences.getString("MyTokenAPI"));
+                return headers;
+            }
+        };
+
+
+        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(20000, 1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        ControllerSingleton.getInstance().addToReqQueue(jsonObjReq,"");
+
+    }
+
+    private void consultarUsoTicket()//REVISAMOS SI EXISTE UN TICKET DISPONIBLE
+    {
+        String _urlWebServiceConsultarDisponibilidadTicket = vars.ipServer.concat("/ws/usoTicket");
+
+        String TAG = "serviceConsultarDisponibilidadTicket";
+
+        Log.d("save","CONSULTANDO consultarUsoTicket");
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, _urlWebServiceConsultarDisponibilidadTicket, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response)
+                    {
+                        try
+                        {
+                            JSONArray clientes;
+
+                            if(response.getBoolean("status"))
+                            {
+                                final JSONObject ticket = response.getJSONObject("ticket");
+                                final String turnoCliente, nombreCliente, codEstado;
+                                desMensaje = ticket.getString("desMensaje");
+                                codEstado = ticket.getString("codEstado");
+
+                                Log.d("save","xx->"+codEstado);
+
+                                    if(codEstado.equals("2"))//VALIDAR PENDIENTE
+                                    {
+                                        Intent intent = getIntent();
+
+                                        String message = intent.getExtras().getString("message");
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                                        builder
+                                                .setTitle("NOTITIFACIÓN TICKET")
+                                                .setMessage("xx"+messageDialog)
+                                                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                                                {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int id)
+                                                    {
+                                                        Intent intent = new Intent(EsperaTurno.this, Inicio.class);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                }).setCancelable(false).show();
+                                    }
+                                }
+
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+
+                        if (error instanceof TimeoutError)
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                            builder
+                                    .setMessage("Error de conexión, sin respuesta del servidor.")
+                                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id)
+                                        {
+                                        }
+                                    }).show();
+                        }
+
+                        else
+
+                        if (error instanceof NoConnectionError)
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                            builder
+                                    .setMessage("Por favor, conectese a la red.")
+                                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id)
+                                        {
+                                        }
+                                    }).show();
+                        }
+
+                        else
+
+                        if (error instanceof AuthFailureError)
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                            builder
+                                    .setMessage("Error de autentificación en la red, favor contacte a su proveedor de servicios.")
+                                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id)
+                                        {
+                                        }
+                                    }).show();
+                        }
+
+                        else
+
+                        if (error instanceof ServerError)
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                            builder
+                                    .setMessage("Error server, sin respuesta del servidor.")
+                                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id)
+                                        {
+                                        }
+                                    }).show();
+                        }
+
+                        else
+
+                        if (error instanceof NetworkError)
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                            builder
+                                    .setMessage("Error de red, contacte a su proveedor de servicios.")
+                                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id)
+                                        {
+                                        }
+                                    }).show();
+                        }
+
+                        else
+
+                        if (error instanceof ParseError)
+                        {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
+                            builder
+                                    .setMessage("Error de conversión Parser, contacte a su proveedor de servicios.")
+                                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id)
+                                        {
+                                        }
+                                    }).show();
+                        }
+
+                    }
+
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError
+            {
+                HashMap<String, String> headers = new HashMap <String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("WWW-Authenticate", "xBasic realm=".concat(""));
+                //headers.put("idDevice",getDeviceId());
+                headers.put("idDevice",sharedPreferences.getString("deviceID"));
+                headers.put("orderId",orderId);
                 headers.put("MyToken",sharedPreferences.getString("MyTokenAPI"));
                 return headers;
             }

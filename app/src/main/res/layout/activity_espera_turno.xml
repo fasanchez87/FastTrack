@@ -15,7 +15,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/border_linear_layout">
 
 
         <ImageView
@@ -37,9 +38,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:text="Hola,"
+                android:text="Bienvenido,"
                 android:textAlignment="center"
                 android:textSize="20sp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="9dp" />
 
 
             <TextView
@@ -50,13 +54,13 @@
                 android:text="FABIO ANDRES SANCHEZ"
                 android:textAlignment="center"
                 android:textSize="20sp" />
-            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="20dp" />
 
     <RelativeLayout
         android:id="@+id/relativeLayoutEsperaAtencionAsesor"
@@ -67,9 +71,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-           >
+            android:background="@drawable/border_linear_layout"
+            >
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
 
             <ProgressBar
                 android:id="@+id/progress_bar_espera_turno"
@@ -94,6 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:gravity="center"
                 android:text="En este momento, se te está asignando un Asesor, atento al llamado!"
                 android:textAlignment="center"
                 android:textSize="20sp"/>
@@ -105,8 +114,9 @@
     <RelativeLayout
         android:id="@+id/relativeLayoutMostrarTurnoAsesorCliente"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone"
+        android:background="@drawable/border_linear_layout"
         >
 
         <LinearLayout
@@ -121,10 +131,10 @@
 
             <TextView
                 android:id="@+id/textViewTextoMostraClienteAsesorAtencion"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Su turno ha sido asignado a la caja 5, favor proceda ahora."
+                android:text="Su turno proceda ahora."
                 android:textAlignment="center"
                 android:textSize="20sp"
                 />
