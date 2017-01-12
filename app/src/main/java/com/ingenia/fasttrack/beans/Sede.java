@@ -15,11 +15,38 @@ public class Sede
     private String lonSede;
     private String latSede;
     private String imgSede;
-
-
-
     private String valTurno;
     private String skuPago;
+
+    public String getCodPrecio() {
+        return codPrecio;
+    }
+
+    public void setCodPrecio(String codPrecio) {
+        this.codPrecio = codPrecio;
+    }
+
+    public String getValPrecio() {
+        return valPrecio;
+    }
+
+    public void setValPrecio(String valPrecio) {
+        this.valPrecio = valPrecio;
+    }
+
+    public String getSkuPrecio() {
+        return skuPrecio;
+    }
+
+    public void setSkuPrecio(String skuPrecio) {
+        this.skuPrecio = skuPrecio;
+    }
+
+    //DATOS PAGOS MULTIPLES
+    private String codPrecio;
+    private String valPrecio;
+    private String skuPrecio;
+
 
 
 

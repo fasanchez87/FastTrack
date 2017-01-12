@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#262524</color>
     <color name="colorAccent">#99bd2b</color>
     <color name="colorBlanco">#ffffff</color>
+    <color name="colorBotonPresionado">#c8e86a</color>
+    <color name="colorBotonSinPresionar">#99bd2b</color>
 </resources>

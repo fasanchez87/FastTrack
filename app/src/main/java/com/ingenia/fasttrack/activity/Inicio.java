@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -41,6 +40,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,7 +90,6 @@ import com.ingenia.fasttrack.util.NotificationUtils;
 import com.ingenia.fasttrack.util.Purchase;
 import com.ingenia.fasttrack.vars.vars;
 import com.ingenia.fasttrack.volley.ControllerSingleton;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,7 +106,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 
 public class Inicio extends AppCompatActivity implements OnMapReadyCallback, LocationListener,
@@ -119,6 +118,23 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     String LogCatClass = "Inicio";
+
+    private RadioButton radio_x1_fasttrack;
+    private RadioButton radio_x2_fasttrack;
+    private RadioButton radio_x3_fasttrack;
+    private RadioButton radio_x4_fasttrack;
+    private RadioButton radio_x5_fasttrack;
+    private RadioButton radio_cantidad_ft;
+
+    RadioGroup opciones_packs_compras;
+
+
+
+    private String codPrecio;
+    private String valorTicket;
+
+
+
 
     private SharedPreferences pref;
     private String tokenFCM, desMensaje;
@@ -141,7 +157,7 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
 
     private String orderIDComprarGoogle;
 
-    double radiusInMeters = 30.0;
+    double radiusInMeters = 100.0;
     int strokeColor = Color.rgb(153,249,1); //red outline
     int shadeColor = Color.argb(50,153,189,48); //opaque red fill
 
@@ -240,6 +256,8 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+
+
         //getSupportActionBar().hide();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -247,6 +265,8 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
         mapFragment.getMapAsync(this);
 
         ticketEsAsumido = true;
+
+       opciones_packs_compras = (RadioGroup) findViewById(R.id.opciones_packs_compras);
 
         updateValuesFromBundle(savedInstanceState);
 
@@ -410,6 +430,14 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
 
     }
 
+    public String getCodPrecio() {
+        return codPrecio;
+    }
+
+    public void setCodPrecio(String codPrecio) {
+        this.codPrecio = codPrecio;
+    }
+
     public String getTemporalCodigoSede()
     {
         return temporalCodigoSede;
@@ -520,7 +548,12 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
                 // Handle error
                 Log.i(LogCatClass, "Error: "+result.getMessage().toString() );
                 //Log.i(LogCatClass, "Error: "+purchase.getOriginalJson().toString() );
-                //mHelper.queryInventoryAsync(mReceivedInventoryListener);
+               // mHelper.queryInventoryAsync(mReceivedInventoryListener);
+
+                Toast.makeText(getApplicationContext(),
+                        "Error: Compra NO efectuada: " + result.getMessage().toString(),
+                        Toast.LENGTH_LONG)
+                        .show();
 
 
                 return;
@@ -569,6 +602,14 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
 
                 }
             }
+
+            else
+            {
+                Toast.makeText(getApplicationContext(),
+                        "Error" + "Sku diferente",
+                        Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     };
 
@@ -588,12 +629,17 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
             {
                 // Handle failure
                 Log.i(LogCatClass, "ERROR CONSUME: "+result.getMessage().toString() );
-
+               /* mHelper.consumeAsync(inventory.getPurchase(getSkuPagoSede()),
+                        mConsumeFinishedListener);
+*/
             }
             else
             {
                 //NOTIFICAMOS QUE SE CONSUMIO LA COMPRA PARA PODER VOLVER A COMPRAR.
                 Log.i(LogCatClass, "CONSUME: "+result.getMessage().toString() );
+
+              /*  Toast.makeText(Inicio.this,
+                        getSkuPagoSede(), Toast.LENGTH_SHORT).show();*/
 
                 mHelper.consumeAsync(inventory.getPurchase(getSkuPagoSede()),
                         mConsumeFinishedListener);
@@ -626,9 +672,14 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
     public void onDestroy()
     {
         super.onDestroy();
+
+        Log.i(LogCatClass,"Destroy: "+mHelper);
+
         if (mHelper != null)
             mHelper.dispose();
         mHelper = null;
+
+        Log.i(LogCatClass,"Destroy: "+mHelper);
     }
 
     private void showGPSDisabledAlertToUser()
@@ -848,7 +899,7 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         mRequestingLocationUpdates = true;
 
         float[] distance = new float[2];
@@ -866,11 +917,21 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
 
                 encontrado = true;
                 setUpShowMessage(true, sedesClienteMostrarSnack.get(k).getNomSede().toString(),
-                        numberFormat.format(Double.parseDouble(sedesClienteMostrarSnack.get(k).getValorTurno().toString())));
-                setSkuPagoSede(sedesClienteMostrarSnack.get(k).getSkuPago().toString());
+                        numberFormat.format(Double.parseDouble(sedesClienteMostrarSnack.get(k).getValPrecio().toString())));
+               // setSkuPagoSede(sedesClienteMostrarSnack.get(k).getSkuPago().toString());
+                //setSkuPagoSede(sedesClienteMostrarSnack.get(k).getSkuPago().toString());//lo comente ya que para compras
+                // multiples el sku varia segun el pack escogido, no puede ser fijo con esta en base de datos actualmente.
+
+               /* Toast.makeText(getApplicationContext(),
+                        "Sku Pago es: " + sedesClienteMostrarSnack.get(k).getSkuPago().toString(),
+                        Toast.LENGTH_LONG)
+                        .show();*/
+
+                setCodPrecio(sedesClienteMostrarSnack.get(k).getCodPrecio().toString());
 
                 setTemporalCodigoSede(sedesClienteMostrarSnack.get(k).getCodSede().toString());
-                setTemporalValorTicket(sedesClienteMostrarSnack.get(k).getValorTurno().toString());
+                //setTemporalValorTicket(sedesClienteMostrarSnack.get(k).getValorTurno().toString());
+                setTemporalValorTicket(sedesClienteMostrarSnack.get(k).getValPrecio().toString());
             }
 
         }
@@ -1118,20 +1179,31 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }*/
 
+
+    public String getCantidadTicket() {
+        return cantidadTicket;
+    }
+
+    public void setCantidadTicket(String cantidadTicket) {
+        this.cantidadTicket = cantidadTicket;
+    }
+
+    private String cantidadTicket;
+
 public void mostrarDialogoNombreCliente()
 {
     LayoutInflater inflater = getLayoutInflater();
-    View alertLayout = inflater.inflate(R.layout.dialog_nombre_cliente, null);
+    final View alertLayout = inflater.inflate(R.layout.dialog_nombre_cliente, null);
     final TextInputLayout inputLayoutNombreCliente = (TextInputLayout) alertLayout.findViewById(R.id.input_layout_nombre_cliente);
     final EditText editTextNombreCliente = (EditText) alertLayout.findViewById(R.id.edit_text_nombre_cliente);
+    opciones_packs_compras = (RadioGroup) alertLayout.findViewById(R.id.opciones_packs_compras);
 
-    //editTextNombreCliente.setText(""+sharedPreferences.getString("nombreCliente").toString());
+    editTextNombreCliente.setText(TextUtils.isEmpty(sharedPreferences.getString("nombreClienteFT"))?null:
+            sharedPreferences.getString("nombreClienteFT"));
    // Log.d("DIRECCION", "" + sharedPreferences.getString("nombreCliente").toString());
 
     final Button botonConfirmarNombreCliente = (Button) alertLayout.findViewById(R.id.btn_confirmar_nombre_cliente);
     final Button botonCancelarNombreCliente = (Button) alertLayout.findViewById(R.id.btn_cancelar_nombre_cliente);
-
-
 
     AlertDialog.Builder alert = new AlertDialog.Builder(this);
     //alert.setTitle("ESCRIBA SU NOMBRE COMPLETO");
@@ -1145,6 +1217,55 @@ public void mostrarDialogoNombreCliente()
         public void onClick(View view)
         {
             String nomCliente = editTextNombreCliente.getText().toString();
+            // get selected radio button from radioGroup
+
+            int selectedId = opciones_packs_compras.getCheckedRadioButtonId();
+
+            radio_cantidad_ft = (RadioButton) alertLayout.findViewById(selectedId);
+
+            if(radio_cantidad_ft.getText().equals("x1 Fast Track"))
+            {
+                //VALOR
+                valorTicket=""+((Integer.parseInt(getTemporalValorTicket()))*(1));
+                setCantidadTicket("1");
+
+            }
+
+            if(radio_cantidad_ft.getText().equals("x2 Fast Track"))
+            {
+                //VALOR
+                valorTicket=""+((Integer.parseInt(getTemporalValorTicket()))*(2));
+                setCantidadTicket("2");
+            }
+
+            if(radio_cantidad_ft.getText().equals("x3 Fast Track"))
+            {
+                //VALOR
+                valorTicket=""+((Integer.parseInt(getTemporalValorTicket()))*(3));
+                setCantidadTicket("3");
+            }
+
+            if(radio_cantidad_ft.getText().equals("x4 Fast Track"))
+            {
+                //VALOR
+                valorTicket=""+((Integer.parseInt(getTemporalValorTicket()))*(4));
+                setCantidadTicket("4");
+            }
+
+            if(radio_cantidad_ft.getText().equals("x5 Fast Track"))
+            {
+                //VALOR
+                valorTicket=""+((Integer.parseInt(getTemporalValorTicket()))*(5));
+                setCantidadTicket("5");
+            }
+
+          /*  Toast.makeText(Inicio.this,
+                    valorTicket, Toast.LENGTH_SHORT).show();*/
+
+            setSkuPagoSede("sku.pago.produccion."+valorTicket); //ASIGNAMOS DESDE EL APP EL SKU DE PAGO.
+
+          /*  Toast.makeText(Inicio.this,
+                    getSkuPagoSede(), Toast.LENGTH_SHORT).show();*/
 
             if (nomCliente.isEmpty())
             {
@@ -1156,15 +1277,26 @@ public void mostrarDialogoNombreCliente()
             {
                 //_webServiceEnviarNotificacionPushATodos(sharedPreferences.getString("serialUsuario"));
 
-               mHelper.launchPurchaseFlow(Inicio.this, getSkuPagoSede(), 10001, mPurchaseFinishedListener,
+
+              /* mHelper.launchPurchaseFlow(Inicio.this, getSkuPagoSede(), 10001, mPurchaseFinishedListener,
+                        getRandomSkuIdPurchaseToGoogle(55));//mypurchasetoken: TOKEN QUE DEBE GENERARSE PARA IDENTIFICAR LA COMPRA EN CASO DE RECLAMO.
+
+*//*
+                Toast.makeText(Inicio.this,
+                        "Valor ticket unitario: "+valorTicket+" - Sku valor: "+getSkuPagoSede(), Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(Inicio.this,
+                        "Codigo Precio: "+getCodPrecio()+" - # Tickets: "+getCantidadTicket(), Toast.LENGTH_SHORT).show();
+*/
+
+                mHelper.launchPurchaseFlow(Inicio.this,getSkuPagoSede(), 10001, mPurchaseFinishedListener,
                         getRandomSkuIdPurchaseToGoogle(55));//mypurchasetoken: TOKEN QUE DEBE GENERARSE PARA IDENTIFICAR LA COMPRA EN CASO DE RECLAMO.
 
 
-
-        /*       ////////////////saltarse el pago//////////////////////
+          /*    ////////////////saltarse el pago//////////////////////
                 ticket = new Ticket();
                 //buyButton.setEnabled(false);
-                sharedPreferences.putString("nombreCliente", nomCliente);
+
 
                         ticket.setOrderId("orderId");
                         ticket.setPackageName("packageName");
@@ -1172,17 +1304,10 @@ public void mostrarDialogoNombreCliente()
                         ticket.setDeveloperPayload("developerPayload");
                         ticket.setPurchaseToken("purchaseToken");
                         serviceComprarTicket();
-               *//*  Intent intent = new Intent(Inicio.this, EsperaTurno.class);
-                intent.putExtra("turnoCliente","PEPE");
-                intent.putExtra("nombreCliente", "PEPE");
-                startActivity(intent);*//**//*
-                //Toast.makeText(getApplicationContext(), "token: "+tokenFCM,Toast.LENGTH_LONG).show();*//*
+              //saltarse el pago*/
 
 
-
-                //editTextNombreCliente.setText(""+sharedPreferences.getString("nombreCliente").toString());
-
-                //dialog.dismiss();//saltarse el pago*/
+                sharedPreferences.putString("nombreClienteFT", nomCliente);
                 alertDialogNombreCliente.dismiss();
             }
 
@@ -1299,6 +1424,7 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
 
                         if(response.getBoolean("status"))
                         {
+
                             clientes = response.getJSONArray("result");
                             JSONObject clienteObject;
                             JSONArray sedes;
@@ -1344,6 +1470,11 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
                                     //sede.setValorTurno(cliente.getValturno());
                                     sede.setValorTurno(sedeObject.getString("valTurno"));
                                     sede.setSkuPago(sedeObject.getString("skuPago"));
+                                    //DATOS PARA PAGOS MULTIPLES***********************
+                                    sede.setCodPrecio(sedeObject.getString("codPrecio"));
+                                    sede.setValPrecio(sedeObject.getString("valPrecio"));
+                                    sede.setSkuPago(sedeObject.getString("skuPrecio"));
+
                                     sedesCliente.add(sede);
                                     sedesClienteMostrarSnack.add(sede);
                                 }
@@ -1367,7 +1498,9 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
                                     markerOptions.title(sedesClienteAux.get(k).getNomSede());
                                     markerOptions.snippet(sedesClienteAux.get(k).getDirSede());
 
-                                    try
+
+                                    //PUESTA DE ICONOS AL MARKER DESDE LA WEB DINAMICAMENTE
+                                   /* try
                                     {
                                         Bitmap bmImg = Ion.with(getApplicationContext())
                                                 .load(sedesClienteAux.get(k).getImgSede()).asBitmap().get();
@@ -1382,7 +1515,8 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
                                     catch (ExecutionException e)
                                     {
                                         e.printStackTrace();
-                                    }
+                                    }*/
+                                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map));
 
                                     mCircle = mGoogleMap.addCircle (new CircleOptions()
                                             .center(latLng)
@@ -1398,6 +1532,8 @@ private void serviceObtenerSedes()//OBTENEMOS LAS SEDES DINAMICAMENTE SEGUN LA U
                                 }
                             }
                             progressDialog.dismiss();
+
+
                         }
 
                         else
@@ -1692,6 +1828,7 @@ private void serviceRegistroDispositivo()//REGISTRAMOS EL DEVICE SEGUN SU IMEI Y
 private void serviceComprarTicket()//COMPRA DE TICKET
 {
     _urlWebService = vars.ipServer.concat("/ws/generarTicket");
+   /* Toast.makeText(getApplicationContext(), "Llamado service: serviceComprarTicket", Toast.LENGTH_LONG).show();*/
 
     JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, _urlWebService, null,
             new Response.Listener<JSONObject>()
@@ -1724,8 +1861,15 @@ private void serviceComprarTicket()//COMPRA DE TICKET
                             intent.putExtra("turnoCliente", response.getString("turnoCliente"));
                             intent.putExtra("nombreCliente", response.getString("nomCliente"));
                             intent.putExtra("orderId", ticket.getOrderId());
+                            //DATOS COMPRAS
+                            intent.putExtra("codPrecio", getCodPrecio());
+                            intent.putExtra("numTickets", getCantidadTicket());
+
+                           /* Toast.makeText(getApplicationContext(), "CodPrecioService: "+getCodPrecio(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Cantidad tickets Service: "+getCantidadTicket(), Toast.LENGTH_LONG).show();
+*/
                             startActivity(intent);
-                            //finish();
+                            finish();
                         }
 
                         else
@@ -1738,6 +1882,8 @@ private void serviceComprarTicket()//COMPRA DE TICKET
                     catch (JSONException e)
                     {
                         e.printStackTrace();
+
+                        Log.i("Inicio","Compra NO Exitosa! "+e.getMessage());
                     }
                 }
             },
@@ -1854,9 +2000,11 @@ private void serviceComprarTicket()//COMPRA DE TICKET
             headers.put("WWW-Authenticate", "xBasic realm=".concat(""));
             headers.put("codSede",getTemporalCodigoSede());
             headers.put("idDevice",getDeviceId());
-            headers.put("nomCliente",sharedPreferences.getString("nombreCliente"));
+            headers.put("nomCliente",sharedPreferences.getString("nombreClienteFT"));
             headers.put("codEstado","1");
             headers.put("valTicket",getTemporalValorTicket());
+            headers.put("codPrecio",getCodPrecio());
+            headers.put("cantidadTicket",cantidadTicket);
             headers.put("tokenFCM",tokenFCM);
             //DATOS COMPRA INAPP BILLING GOOGLE
             headers.put("orderId",ticket.getOrderId());
@@ -1892,12 +2040,13 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
                         if(response.getBoolean("status"))
                         {
                             final JSONObject ticket = response.getJSONObject("ticket");
-                            final String turnoCliente, nombreCliente, codEstado;
+                            final String turnoCliente, nombreCliente, codEstado, numTickets;
 
                             turnoCliente = ticket.getString("codTicket");
                             nombreCliente = ticket.getString("nomCliente");
                             desMensaje = ticket.getString("desMensaje");
                             codEstado = ticket.getString("codEstado");
+                            numTickets = ticket.getString("numCantidad");
 
                             Log.i(TAG,""+desMensaje);
 
@@ -1928,6 +2077,7 @@ private void serviceConsultarDisponibilidadTicket()//REVISAMOS SI EXISTE UN TICK
                                                 intent.putExtra("message", desMensaje);
                                                 intent.putExtra("ticketEsAsumido", ticketEsAsumido);
                                                 intent.putExtra("codEstado", codEstado);
+                                                intent.putExtra("numTickets", numTickets);
                                                 startActivity(intent);
                                                 Inicio.this.finish();
 
