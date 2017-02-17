@@ -128,13 +128,8 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
 
     RadioGroup opciones_packs_compras;
 
-
-
     private String codPrecio;
     private String valorTicket;
-
-
-
 
     private SharedPreferences pref;
     private String tokenFCM, desMensaje;
@@ -255,8 +250,6 @@ public class Inicio extends AppCompatActivity implements OnMapReadyCallback, Loc
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-
 
         //getSupportActionBar().hide();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
