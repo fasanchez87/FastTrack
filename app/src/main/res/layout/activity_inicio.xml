@@ -10,8 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -25,17 +24,6 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-        <!--<TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="FastTrack"
-            android:textColor="#FFFFFF"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText" />-->
-
             <ImageView
                 android:id="@android:id/icon"
                 android:layout_width="wrap_content"
@@ -45,12 +33,9 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:focusable="false"/>
-
         </android.support.v7.widget.Toolbar>
 
-
     </android.support.design.widget.AppBarLayout>
-
 
     <fragment
         android:id="@+id/map"
@@ -60,22 +45,5 @@
         tools:context=".activity.Inicio"
        />
 </LinearLayout>
-
-
-
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_dialer"
-        android:visibility="gone"
-        />
-
-
-
 
 </android.support.design.widget.CoordinatorLayout>

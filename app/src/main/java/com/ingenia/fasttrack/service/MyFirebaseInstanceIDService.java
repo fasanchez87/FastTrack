@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -12,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.iid.InstanceID;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.ingenia.fasttrack.app.Config;
@@ -85,15 +85,14 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
                             {
 
                                 Log.e(TAG, "Se registro exitosamente GCM al Server: UpdateTokenFCM");
-                                Toast.makeText(MyFirebaseInstanceIDService.this, "Se registro exitosamente FCM al Server::SERVICIO INTENTSERVICE", Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(MyFirebaseInstanceIDService.this, "Se registro exitosamente FCM al Server::SERVICIO INTENTSERVICE", Toast.LENGTH_SHORT).show();
 
                             }
 
                             else
                             {
                                 Log.e(TAG, "Fallo al registrar GCM al Server: UpdateTokenFCM");
-                                Toast.makeText(MyFirebaseInstanceIDService.this, "Error, FCM al Server:UpdateTokenFCM", Toast.LENGTH_SHORT).show();
-
+                               // Toast.makeText(MyFirebaseInstanceIDService.this, "Error, FCM al Server:UpdateTokenFCM", Toast.LENGTH_SHORT).show();
 
                             }
                         }
@@ -122,8 +121,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 headers.put("WWW-Authenticate", "xBasic realm=".concat(""));
                 headers.put("tokenFCM", refreshedToken);
-                headers.put("idDevice", msharedPreferences.getString("deviceID"));
-                headers.put("MyToken", msharedPreferences.getString("MyTokenAPI"));
+                headers.put("idDevice", InstanceID.getInstance(getApplicationContext()).getId());
+                //headers.put("MyToken", msharedPreferences.getString("MyTokenAPI"));
                 return headers;
             }
         };

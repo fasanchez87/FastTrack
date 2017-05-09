@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edit_text_nombre_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_action_name"
+                android:drawablePadding="10dp"
+                android:hint="Nombre"
+                android:inputType="textCapCharacters"
+                android:singleLine="true" />
+
+            <EditText
+                android:id="@+id/edit_text_apellido_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_action_name"
+                android:drawablePadding="10dp"
+                android:hint="Apellido"
+                android:inputType="textCapCharacters"
+                android:singleLine="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edit_text_numero_tarjeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="01234 56789"
+                    android:drawableLeft="@drawable/ic_action_credit_card"
+                    android:drawablePadding="10dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="N° Tarjeta"
+                    android:editable="false"
+                    android:inputType="number"
+                    android:maxLength="19"
+                    android:layout_weight="1"/>
+
+            <ImageButton
+                android:id="@+id/imageButtonScanTarjeta"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_action_camera" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/edit_text_mes_tarjeta_credito_registro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_action_vencimiento_tarjeta"
+                    android:drawablePadding="10dp"
+                    android:hint="MM"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:layout_weight="4"/>
+
+
+
+                <EditText
+                    android:id="@+id/edit_text_año_tarjeta_credito_registro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_action_vencimiento_tarjeta"
+                    android:drawablePadding="10dp"
+                    android:hint="AA"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:layout_weight="4"/>
+
+
+
+                <EditText
+                    android:id="@+id/edit_text_cvv_tarjeta_credito_registro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_action_credit_card"
+                    android:drawablePadding="10dp"
+                    android:hint="CVV"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:layout_weight="3"/>
+
+        </LinearLayout>
+
+
+        <!--<android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_fecha_vencimiento_tarjeta_cliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <EditText
+                android:id="@+id/edit_text_fecha_vencimiento_tarjeta_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine = "true"
+                android:inputType="textCapCharacters"
+                android:hint="Vigencia"
+                android:drawablePadding="10dp"
+                android:drawableLeft="@drawable/ic_action_vencimiento_tarjeta"/>
+        </android.support.design.widget.TextInputLayout>-->
+
+        <!-- <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_vcc_tarjeta_cliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <EditText
+                android:id="@+id/edit_text_vcc_tarjeta_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine = "true"
+                android:inputType="textCapCharacters"
+                android:hint="VCC"
+                android:drawablePadding="10dp"
+                android:drawableLeft="@drawable/ic_action_credit_card"/>
+        </android.support.design.widget.TextInputLayout>-->
+
+
+
+            <EditText
+                android:id="@+id/edit_text_cedula_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_action_cedula"
+                android:drawablePadding="10dp"
+                android:hint="Cédula"
+                android:inputType="number"
+                android:digits="01234 56789"
+                android:singleLine="true" />
+
+
+
+
+            <EditText
+                android:id="@+id/edit_text_layout_email_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_action_email"
+                android:drawablePadding="10dp"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:singleLine="true" />
+
+
+
+            <EditText
+                android:id="@+id/edit_text_layout_telefono_cliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_action_telefono"
+                android:drawablePadding="10dp"
+                android:hint="Teléfono"
+                android:inputType="number"
+                android:singleLine="true" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="7dp" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/check_aceptar_terminos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:onClick="checkEventTerminos"
+            />
+        <Space
+            android:layout_width="7dp"
+            android:layout_height="0dp" />
+
+        <TextView
+            android:id="@+id/editTextTerminos"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Acepto los términos y condiciones"
+            android:layout_weight="1"
+             />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+
+        <Button
+            android:id="@+id/btn_cancelar_nombre_cliente"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:text="CANCELAR"
+            android:layout_weight="1"
+            android:textColor="@android:color/white" />
+
+        <Space
+            android:layout_width="7dp"
+            android:layout_height="0dp" />
+
+
+        <Button
+            android:id="@+id/btn_confirmar_pago_cliente"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#ff8000"
+            android:text="CONFIRMAR"
+            android:layout_weight="1"
+            android:textColor="@android:color/white" />
+
+
+
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+</LinearLayout>

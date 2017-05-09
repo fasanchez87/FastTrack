@@ -109,7 +109,7 @@ public class EsperaTurno extends AppCompatActivity
                 AlertDialog.Builder builder = new AlertDialog.Builder(EsperaTurno.this);
                 builder
                         .setTitle("ADVERTENCIA")
-                        .setMessage("Su Ticket Fast Track será destruido y no podrá volverse a usar, ¿esta seguro de realizar esta acción?")
+                        .setMessage("El Ticket Fast Track será destruido y no podrá volverse a usar, ¿está seguro de realizar esta acción?")
                         .setPositiveButton("Aceptar", new DialogInterface.OnClickListener()
                         {
                             @Override
@@ -161,8 +161,8 @@ public class EsperaTurno extends AppCompatActivity
                 Log.i(TAG, "Nombre Cliente Seguimiento -> "+nombreCliente);
                 Log.i(TAG, "desMensaje -> "+desMensaje);
                 Log.i(TAG, "existeTicketSinProcesar -> "+ticketEsAsumido);
-                Log.i(TAG, "orderId -> "+orderId);
 
+                Log.i(TAG, "orderId -> "+orderId);
                 Log.i(TAG, "codPrecio -> "+codPrecio);
                 Log.i(TAG, "numTickets -> "+numTickets);
             }

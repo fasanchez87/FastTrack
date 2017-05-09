@@ -133,7 +133,6 @@
                         android:layout_gravity="center"
                         android:layout_width="250dp"
                         android:layout_height="250dp"
-                        android:src="@drawable/qr"
                        />
                 </LinearLayout>
             <Space

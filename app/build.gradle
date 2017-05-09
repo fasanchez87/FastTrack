@@ -15,13 +15,13 @@ android {
         applicationId "com.ingenia.fasttrack"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 6
-        versionName "1.6"
+        versionCode 12
+        versionName "1.12"
         multiDexEnabled true
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
@@ -48,8 +48,7 @@ dependencies {
     compile 'com.github.k0shk0sh:PermissionHelper:1.0.13'
     compile 'com.google.firebase:firebase-messaging:9.6.1'
     compile 'com.google.zxing:core:3.2.1'
-
-
+    compile 'io.card:android-sdk:5.5.0'
 }
 // ADD THIS AT THE BOTTOM
 apply plugin: 'com.google.gms.google-services'

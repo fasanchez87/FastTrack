@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Fast Track</string>
-    <string name="title_activity_inicio">Fast Track</string>
+    <string name="app_name">Fastracker</string>
+    <string name="title_activity_inicio">Fastracker</string>
     <string name="key_licenced_app_billing">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApz12tE1nNGmDIEal9HvvC5DGrjI5SIAXEhL/ESzEEswdope66DZTzaZjVvXJQF+qE33/X9Tq5d8UKnkW3yvCJqKAOSU3S06xCv5/9TnuBC1R1qla4hgAyWw/WBQWDBCN8kzUzWPIt5tSlogIffy1VKhlCTbdtSZ31kWWd1aL8nfPO/GkgliMCb6FztQx2EYQd2GSRIVGqrRkm8+tHpDxkmzw0mi2Y8qy7D3xqBdUOp97Zz6OEOSvu54tZGAZaveJ39FQ53T3geFGgpInRvAIVQ9DTCKMtXdgVCvQxTOeD6BUQvU3HBCjJhe9MymvZewduAbK4qI37i+TJA7qS0wYawIDAQAB</string>
 
     <string name="legal_info">Legal Info</string>
@@ -183,6 +183,25 @@
     <string name="tap_screen">tap screen</string>
     <string name="long_press_screen">long press screen</string>
     <string name="walk_panorama">Walk</string>
+
+    <string name="next">Seguir</string>
+    <string name="skip">Saltar</string>
+    <string name="start">Iniciar</string>
+
+    <string name="slide_1_title">Noticias</string>
+    <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
+
+    <string name="slide_2_title">Movie Tickets</string>
+    <string name="slide_2_desc">Book movie tickets for your family and friends!</string>
+
+    <string name="slide_3_title">Great Discounts</string>
+    <string name="slide_3_desc">Best discounts on every single service we offer!</string>
+
+    <string name="slide_4_title">World Travel</string>
+    <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
+
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again">Play Again</string>
 
     <!--    Permissions    -->
     <string name="permission_rationale_location">FastTrack require que apruebe el permiso de Geolocalización para poder operar correctamente; Por favor apruebe dicho permiso.</string>
